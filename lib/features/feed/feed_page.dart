@@ -1,35 +1,49 @@
+import 'package:dev_connect/core/ui/components/post/post_card.dart';
+import 'package:dev_connect/models/post_model.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:dev_connect/core/routes/app_routes.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:dev_connect/core/di/service_locator.dart';
+import 'package:dev_connect/features/feed/controller/feed_controller.dart';
 
-class FeedPage extends StatelessWidget {
+class FeedPage extends StatefulWidget {
   const FeedPage({super.key});
+
+  @override
+  State<FeedPage> createState() => _FeedPageState();
+}
+
+class _FeedPageState extends State<FeedPage> {
+  final FeedController _controller = locator<FeedController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.init();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Feed')),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                // navega para detalhes do post com id de exemplo
-                final String path = AppRoutes.postDetail.replaceFirst(':id', '42');
-                context.go(path);
-              },
-              child: const Text('Open Post Detail (id=42)'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () {
-                // voltar para login (exemplo de logout)
-                context.go(AppRoutes.login);
-              },
-              child: const Text('Logout (Go to Login)'),
-            ),
-          ],
+      appBar: AppBar(
+        title: const Text('Feed'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: Observer(
+        builder: (_) => ListView.builder(
+          itemCount: _controller.store.posts.length,
+          itemBuilder: (BuildContext context, int index) {
+            final Post post = _controller.store.posts[index];
+            return PostCard(
+              post: post,
+              onLike: () => _controller.toggleLike(post),
+              onComment: () {},
+            );
+          },
         ),
       ),
     );
