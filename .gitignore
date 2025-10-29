@@ -58,6 +58,7 @@ app.*.map.json
 bin/
 gen/
 out/
+**/*.g.dart
 
 # Gradle files
 .gradle/
@@ -294,3 +295,4 @@ GoogleService-Info.plist
 google-services.json
 # Plugins (already resolved through pubspec.yaml)
 .flutter-plugins
+.env
