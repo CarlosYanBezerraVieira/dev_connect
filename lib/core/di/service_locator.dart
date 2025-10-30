@@ -13,8 +13,8 @@ import 'package:dev_connect/models/post_model.dart';
 
 import 'package:dev_connect/repositories/post_repository.dart';
 import 'package:dev_connect/repositories/post_repository_impl.dart';
-import 'package:dev_connect/core/services/post_service.dart';
-import 'package:dev_connect/core/services/post_service_impl.dart';
+import 'package:dev_connect/services/post_service.dart';
+import 'package:dev_connect/services/post_service_impl.dart';
 
 import 'package:dev_connect/features/feed/store/feed_store.dart';
 import 'package:dev_connect/features/feed/controller/feed_controller.dart';

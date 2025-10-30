@@ -1,4 +1,4 @@
-import 'package:dev_connect/core/services/post_service.dart';
+import 'package:dev_connect/services/post_service.dart';
 import 'package:dev_connect/features/post_detail/store/post_detail_store.dart';
 import 'package:dev_connect/models/post_model.dart';
 

@@ -1,6 +1,6 @@
 import 'package:dev_connect/core/db/hive_local_storage_service.dart';
 import 'package:dev_connect/repositories/post_repository.dart';
-import 'package:dev_connect/core/services/post_service.dart';
+import 'package:dev_connect/services/post_service.dart';
 import 'package:dev_connect/models/post_model.dart';
 
 class PostServiceImpl implements PostService {
@@ -17,12 +17,12 @@ class PostServiceImpl implements PostService {
   @override
   Future<List<Post>> fetchAndCachePosts() async {
     final List<Post> remote = await api.fetchPosts();
-    if (remote.isNotEmpty) {
-      await local.clear();
-      for (final Post p in remote) {
-        await local.put(p.id, p);
-      }
+
+    await local.clear();
+    for (final Post p in remote) {
+      await local.put(p.id, p);
     }
+
     return await local.getAll();
   }
 
@@ -52,6 +52,7 @@ class PostServiceImpl implements PostService {
   @override
   Future<void> deletePost(String id) async {
     await api.deletePost(id);
+    await fetchAndCachePosts();
   }
 
   @override
