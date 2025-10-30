@@ -8,6 +8,8 @@ class DCTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final void Function(String)? onFieldSubmitted;
+  final int? minLines;
+  final int? maxLines;
 
   const DCTextFormField({
     super.key,
@@ -18,6 +20,8 @@ class DCTextFormField extends StatelessWidget {
     this.keyboardType,
     this.validator,
     this.onFieldSubmitted,
+    this.minLines,
+    this.maxLines,
   });
 
   @override
@@ -28,6 +32,8 @@ class DCTextFormField extends StatelessWidget {
       obscureText: obscureText,
       validator: validator,
       onFieldSubmitted: onFieldSubmitted,
+      minLines: minLines,
+      maxLines: maxLines,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
