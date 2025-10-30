@@ -1,5 +1,6 @@
 import 'package:dev_connect/core/routes/app_routes.dart';
 import 'package:dev_connect/core/ui/components/post/post_card.dart';
+import 'package:dev_connect/features/feed/widgets/feed_empty_state.dart';
 import 'package:dev_connect/core/ui/helpers/snackbar_helper.dart';
 import 'package:dev_connect/core/ui/components/loading/dc_loading.dart';
 import 'package:dev_connect/features/feed/store/feed_store.dart';
@@ -65,6 +66,10 @@ class _FeedPageState extends State<FeedPage> {
           final FeedStore store = _controller.store;
           if (store.loading) {
             return const DCLoading();
+          }
+
+          if (store.posts.isEmpty) {
+            return const FeedEmptyState();
           }
 
           return ListView.builder(
