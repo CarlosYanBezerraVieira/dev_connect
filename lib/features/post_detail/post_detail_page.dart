@@ -4,7 +4,7 @@ import 'package:dev_connect/core/ui/components/loading/dc_loading.dart';
 import 'package:dev_connect/core/ui/components/post/post_header.dart';
 import 'package:dev_connect/features/post_detail/controller/post_detail_controller.dart';
 import 'package:dev_connect/features/post_detail/store/post_detail_store.dart';
-import 'package:dev_connect/features/post_detail/widgets/delete_confirmation_dialog.dart';
+import 'package:dev_connect/core/ui/dialog/delete_confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
@@ -110,7 +110,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               children: <Widget>[
                 PostHeader(
                   author: _store.post!.author,
-                  authorImageUrl: _store.post!.authorImageBytes,
+                  authorImageBytes: _store.post!.authorImageBytes,
                 ),
                 const SizedBox(height: 12),
                 Text(

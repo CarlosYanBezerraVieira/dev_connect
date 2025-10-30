@@ -1,21 +1,23 @@
+import 'package:dev_connect/core/ui/components/dc_circular_avatar.dart';
 import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
 class PostHeader extends StatelessWidget {
   final String author;
-  final String authorImageUrl;
+  final Uint8List? authorImageBytes;
 
   const PostHeader({
     super.key,
     required this.author,
-    required this.authorImageUrl,
+    this.authorImageBytes,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        CircleAvatar(
-          backgroundImage: NetworkImage(authorImageUrl),
+        DCCircularAvatar(
+          imageBytes: authorImageBytes,
           radius: 20,
         ),
         const SizedBox(width: 12),

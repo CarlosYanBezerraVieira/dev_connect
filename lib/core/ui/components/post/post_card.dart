@@ -32,7 +32,7 @@ class PostCard extends StatelessWidget {
             children: <Widget>[
               PostHeader(
                 author: post.author,
-                authorImageUrl: post.authorImageBytes,
+                authorImageBytes: post.authorImageBytes,
               ),
               const SizedBox(height: 12),
               Text(post.content, style: Theme.of(context).textTheme.bodyMedium),
