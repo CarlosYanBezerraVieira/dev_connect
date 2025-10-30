@@ -6,7 +6,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:validatorless/validatorless.dart';
 import 'package:dev_connect/core/routes/app_routes.dart';
-import 'package:dev_connect/core/ui/components/dc_loading_button.dart';
+import 'package:dev_connect/core/ui/components/dc_button.dart';
 import 'package:dev_connect/core/ui/components/dc_text_form_field.dart';
 import 'package:dev_connect/core/ui/helpers/snackbar_helper.dart';
 import 'package:mobx/mobx.dart';
@@ -105,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                   }),
                   const SizedBox(height: 20),
                   Observer(builder: (_) {
-                    return DCLoadingButton(
+                    return DCButton(
                       onPressed: _submit,
                       label: 'Entrar',
                       loading: _store.loading,
