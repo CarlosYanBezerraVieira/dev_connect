@@ -1,4 +1,5 @@
 import 'package:dev_connect/core/di/service_locator.dart';
+import 'package:dev_connect/core/ui/components/loading/dc_loading.dart';
 import 'package:dev_connect/core/ui/helpers/snackbar_helper.dart';
 import 'package:dev_connect/core/mixins/image_picker_mixin.dart';
 import 'package:dev_connect/features/upsert/controller/upsert_post_controller.dart';
@@ -65,6 +66,7 @@ class _UpsertPostPageState extends State<UpsertPostPage> with ImagePickerMixin {
     _authorController.dispose();
     _contentController.dispose();
     _errorDisposer?.call();
+    _store.clearSelectedImageBytes();
     super.dispose();
   }
 
@@ -107,6 +109,7 @@ class _UpsertPostPageState extends State<UpsertPostPage> with ImagePickerMixin {
     await _controller.upsertPost(post);
 
     if (mounted) {
+      _store.clearSelectedImageBytes();
       context.pop(true);
     }
   }
@@ -120,7 +123,7 @@ class _UpsertPostPageState extends State<UpsertPostPage> with ImagePickerMixin {
       body: SafeArea(
         child: Observer(builder: (_) {
           if (_store.loading && _isEditing) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: DCLoading());
           }
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
