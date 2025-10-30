@@ -46,6 +46,12 @@ class Post extends HiveObject {
   @HiveField(5)
    bool isLiked;
 
+  @HiveField(6)
+  final DateTime? createdAt;
+
+  @HiveField(7)
+  final DateTime? updatedAt;
+
   Post({
     required this.id,
     required this.author,
@@ -53,6 +59,8 @@ class Post extends HiveObject {
     required this.content,
     required this.likes,
     this.isLiked = false,
+    this.createdAt,
+    this.updatedAt,
   });
 
   Post copyWith({
@@ -62,6 +70,8 @@ class Post extends HiveObject {
     String? content,
     int? likes,
     bool? isLiked,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Post(
       id: id ?? this.id,
@@ -70,6 +80,8 @@ class Post extends HiveObject {
       content: content ?? this.content,
       likes: likes ?? this.likes,
       isLiked: isLiked ?? this.isLiked,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
