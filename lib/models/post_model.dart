@@ -7,36 +7,51 @@ part 'post_model.g.dart';
 @JsonSerializable()
 class Post extends HiveObject {
   @HiveField(0)
+  @JsonKey(name: "_id")
   final String id;
 
   @HiveField(1)
   final String author;
 
   @HiveField(2)
-  final String authorImageUrl;
+  final String authorImageBytes;
 
   @HiveField(3)
   final String content;
 
   @HiveField(4)
-  int likes;
+   int likes;
 
   @HiveField(5)
-  int comments;
-
-  @HiveField(6)
-  bool isLiked;
+   bool isLiked;
 
   Post({
     required this.id,
     required this.author,
-    required this.authorImageUrl,
+    required this.authorImageBytes,
     required this.content,
-    this.likes = 0,
-    this.comments = 0,
+    required this.likes,
     this.isLiked = false,
   });
-  factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
 
+  Post copyWith({
+    String? id,
+    String? author,
+    String? authorImageBytes,
+    String? content,
+    int? likes,
+    bool? isLiked,
+  }) {
+    return Post(
+      id: id ?? this.id,
+      author: author ?? this.author,
+      authorImageBytes: authorImageBytes ?? this.authorImageBytes,
+      content: content ?? this.content,
+      likes: likes ?? this.likes,
+      isLiked: isLiked ?? this.isLiked,
+    );
+  }
+
+  factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
   Map<String, dynamic> toJson() => _$PostToJson(this);
 }

@@ -6,14 +6,12 @@ import 'package:flutter/material.dart';
 class PostCard extends StatelessWidget {
   final Post post;
   final VoidCallback onLike;
-  final VoidCallback onComment;
   final VoidCallback? onTap;
 
   const PostCard({
     super.key,
     required this.post,
     required this.onLike,
-    required this.onComment,
     this.onTap,
   });
 
@@ -34,17 +32,20 @@ class PostCard extends StatelessWidget {
             children: <Widget>[
               PostHeader(
                 author: post.author,
-                authorImageUrl: post.authorImageUrl,
+                authorImageUrl: post.authorImageBytes,
               ),
               const SizedBox(height: 12),
               Text(post.content, style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 12),
-              PostActions(
-                isLiked: post.isLiked,
-                likeCount: post.likes,
-                commentCount: post.comments,
-                onLike: onLike,
-                onComment: onComment,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  PostActions(
+                    isLiked: post.isLiked,
+                    likeCount: post.likes,
+                    onLike: onLike,
+                  ),
+                ],
               ),
             ],
           ),
