@@ -1,3 +1,4 @@
+import 'package:dev_connect/core/routes/app_routes.dart';
 import 'package:dev_connect/core/ui/components/post/post_card.dart';
 import 'package:dev_connect/core/ui/helpers/snackbar_helper.dart';
 import 'package:dev_connect/core/ui/components/loading/dc_loading.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:dev_connect/core/di/service_locator.dart';
 import 'package:dev_connect/features/feed/controller/feed_controller.dart';
 import 'package:mobx/mobx.dart';
+import 'package:go_router/go_router.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({super.key});
@@ -25,7 +27,8 @@ class _FeedPageState extends State<FeedPage> {
     super.initState();
     _controller.init();
 
-    _errorDisposer = reaction<String?>((_) => _controller.store.errorMessage, (String? msg) {
+    _errorDisposer =
+        reaction<String?>((_) => _controller.store.errorMessage, (String? msg) {
       if (msg != null && msg.isNotEmpty) {
         SnackBarHelper.showError(context, msg);
         _controller.store.clearError();
@@ -47,7 +50,13 @@ class _FeedPageState extends State<FeedPage> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () async {
+              final bool? result =
+                  await context.push<bool>(AppRoutes.postUpsert);
+              if (result == true) {
+                await _controller.init();
+              }
+            },
           ),
         ],
       ),
@@ -64,6 +73,15 @@ class _FeedPageState extends State<FeedPage> {
               final Post post = store.posts[index];
               return PostCard(
                 post: post,
+                onTap: () async {
+                  final bool? edited = await context.pushNamed<bool>(
+                    RouteNames.postDetail,
+                    pathParameters: <String, String>{'id': post.id},
+                  );
+                  if (edited == true) {
+                    await _controller.init();
+                  }
+                },
                 onLike: () => _controller.toggleLike(post),
                 onComment: () {},
               );
