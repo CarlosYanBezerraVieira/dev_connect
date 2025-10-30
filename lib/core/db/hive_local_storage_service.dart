@@ -1,4 +1,4 @@
-import 'package:dev_connect/core/services/local_storage_service.dart';
+import 'package:dev_connect/core/db/local_storage_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HiveLocalStorageService<T> implements LocalStorageService<T> {
