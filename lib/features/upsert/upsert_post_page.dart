@@ -1,15 +1,19 @@
 import 'package:dev_connect/core/di/service_locator.dart';
 import 'package:dev_connect/core/ui/helpers/snackbar_helper.dart';
+import 'package:dev_connect/core/mixins/image_picker_mixin.dart';
 import 'package:dev_connect/features/upsert/controller/upsert_post_controller.dart';
 import 'package:dev_connect/features/upsert/store/upsert_post_store.dart';
+import 'package:dev_connect/core/ui/dialog/image_source_picker_dialog.dart';
 import 'package:dev_connect/models/post_model.dart';
 import 'package:dev_connect/core/ui/components/dc_text_form_field.dart';
 import 'package:dev_connect/core/ui/components/dc_button.dart';
+import 'package:dev_connect/core/ui/components/dc_circular_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
 import 'package:validatorless/validatorless.dart';
+import 'dart:typed_data';
 
 class UpsertPostPage extends StatefulWidget {
   const UpsertPostPage({super.key, this.postId});
@@ -20,10 +24,9 @@ class UpsertPostPage extends StatefulWidget {
   State<UpsertPostPage> createState() => _UpsertPostPageState();
 }
 
-class _UpsertPostPageState extends State<UpsertPostPage> {
+class _UpsertPostPageState extends State<UpsertPostPage> with ImagePickerMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _authorController = TextEditingController();
-  final TextEditingController _authorImageController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
   UpsertPostController get _controller => locator<UpsertPostController>();
@@ -32,6 +35,7 @@ class _UpsertPostPageState extends State<UpsertPostPage> {
   bool get _isEditing => (widget.postId != null && widget.postId!.isNotEmpty);
 
   ReactionDisposer? _errorDisposer;
+  
   @override
   void initState() {
     super.initState();
@@ -40,7 +44,7 @@ class _UpsertPostPageState extends State<UpsertPostPage> {
         final Post? p = _store.currentPost;
         if (p != null) {
           _authorController.text = p.author;
-          _authorImageController.text = p.authorImageBytes;
+          _store.setSelectedImageBytes(p.authorImageBytes);
           _contentController.text = p.content;
         }
       });
@@ -59,10 +63,32 @@ class _UpsertPostPageState extends State<UpsertPostPage> {
   @override
   void dispose() {
     _authorController.dispose();
-    _authorImageController.dispose();
     _contentController.dispose();
     _errorDisposer?.call();
     super.dispose();
+  }
+
+  Future<void> _handlePickImage() async {
+    try {
+      final ImageSource? source = await showDialog<ImageSource>(
+        context: context,
+        builder: (_) => const ImageSourcePickerDialog(),
+      );
+
+      if (source == null) return;
+
+      final Uint8List? bytes = source == ImageSource.gallery
+          ? await pickImageFromGallery()
+          : await pickImageFromCamera();
+
+      if (bytes != null) {
+        _store.setSelectedImageBytes(bytes);
+      }
+    } catch (e) {
+      if (mounted) {
+        SnackBarHelper.showError(context, 'Erro ao selecionar imagem');
+      }
+    }
   }
 
   Future<void> _submit() async {
@@ -73,7 +99,7 @@ class _UpsertPostPageState extends State<UpsertPostPage> {
     final Post post = Post(
       id: id,
       author: _authorController.text.trim(),
-      authorImageBytes: _authorImageController.text.trim(),
+      authorImageBytes: _store.selectedImageBytes ?? Uint8List(0),
       content: _contentController.text.trim(),
       likes: _store.currentPost?.likes ?? 0,
       isLiked: _store.currentPost?.isLiked ?? false,
@@ -103,21 +129,25 @@ class _UpsertPostPageState extends State<UpsertPostPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  DCTextFormField(
-                    controller: _authorImageController,
-                    label: 'URL da imagem do autor (opcional)',
-                    keyboardType: TextInputType.url,
-                    validator: (String? value) {
-                      final String v = value?.trim() ?? '';
-                      if (v.isEmpty) return null;
-                      final Uri? uri = Uri.tryParse(v);
-                      if (uri == null || !uri.hasScheme) {
-                        return 'URL inválida';
-                      }
-                      return null;
-                    },
+                  Center(
+                    child: Column(
+                      children: [
+                        Observer(builder: (_) {
+                          return DCCircularAvatar(
+                            imageBytes: _store.selectedImageBytes,
+                            radius: 50,
+                          );
+                        }),
+                        const SizedBox(height: 12),
+                        ElevatedButton.icon(
+                          onPressed: _handlePickImage,
+                          icon: const Icon(Icons.image),
+                          label: const Text('Selecionar Imagem'),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 20),
                   DCTextFormField(
                     controller: _authorController,
                     label: 'Autor',
