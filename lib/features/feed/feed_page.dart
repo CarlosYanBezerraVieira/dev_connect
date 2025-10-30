@@ -73,6 +73,7 @@ class _FeedPageState extends State<FeedPage> {
           }
 
           return ListView.builder(
+            padding: const EdgeInsets.only(top: 24),
             itemCount: store.posts.length,
             itemBuilder: (BuildContext context, int index) {
               final Post post = store.posts[index];

@@ -46,12 +46,12 @@ abstract class _FeedStoreBase with Store {
     final int index = posts.indexWhere((Post p) => p.id == post.id);
     if (index == -1) return;
 
-    final Post current = posts[index];
+     Post current = posts[index];
     current.isLiked = !current.isLiked;
     if (current.isLiked) {
-      current.likes++;
+      current = current.copyWith(likes: current.likes + 1);
     } else {
-      current.likes--;
+      current = current.copyWith(likes: current.likes - 1);
     }
     posts[index] = current;
   }
