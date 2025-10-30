@@ -1,24 +1,25 @@
+import 'package:dev_connect/features/upsert/controller/upsert_post_controller.dart';
+import 'package:dev_connect/features/upsert/store/upsert_post_store.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 
 import 'package:dev_connect/core/network/api_client.dart';
-import 'package:dev_connect/core/services/hive_local_storage_service.dart';
+import 'package:dev_connect/core/db/hive_local_storage_service.dart';
 
 import 'package:dev_connect/models/post_model.dart';
 
-import 'package:dev_connect/features/post/repositories/post_repository.dart';
-import 'package:dev_connect/features/post/repositories/post_repository_impl.dart';
-import 'package:dev_connect/features/post/services/post_service.dart';
-import 'package:dev_connect/features/post/services/post_service_impl.dart';
+import 'package:dev_connect/repositories/post_repository.dart';
+import 'package:dev_connect/repositories/post_repository_impl.dart';
+import 'package:dev_connect/core/services/post_service.dart';
+import 'package:dev_connect/core/services/post_service_impl.dart';
 
 import 'package:dev_connect/features/feed/store/feed_store.dart';
 import 'package:dev_connect/features/feed/controller/feed_controller.dart';
 
-import 'package:dev_connect/features/post/store/upsert_post_store.dart';
-import 'package:dev_connect/features/post/controller/upsert_post_controller.dart';
-import 'package:dev_connect/features/post/store/post_detail_store.dart';
-import 'package:dev_connect/features/post/controller/post_detail_controller.dart';
+
+import 'package:dev_connect/features/post_detail/store/post_detail_store.dart';
+import 'package:dev_connect/features/post_detail/controller/post_detail_controller.dart';
 
 final GetIt locator = GetIt.instance;
 
