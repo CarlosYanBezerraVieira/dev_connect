@@ -111,6 +111,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 PostHeader(
                   author: _store.post!.author,
                   authorImageBytes: _store.post!.authorImageBytes,
+                  createdAt: _store.post!.createdAt,
                 ),
                 const SizedBox(height: 12),
                 Text(
