@@ -1,7 +1,23 @@
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 part 'post_model.g.dart';
+
+Uint8List _base64ToUint8List(String? json) {
+  if (json == null || json.isEmpty) return Uint8List(0);
+  try {
+    return base64Decode(json);
+  } catch (_) {
+    return Uint8List(0);
+  }
+}
+
+String _uint8ListToBase64(Uint8List object) {
+  if (object.isEmpty) return '';
+  return base64Encode(object);
+}
 
 @HiveType(typeId: 1)
 @JsonSerializable()
@@ -14,7 +30,12 @@ class Post extends HiveObject {
   final String author;
 
   @HiveField(2)
-  final String authorImageBytes;
+  @JsonKey(
+    name: 'authorImageBytes',
+    fromJson: _base64ToUint8List,
+    toJson: _uint8ListToBase64,
+  )
+  final Uint8List authorImageBytes;
 
   @HiveField(3)
   final String content;
@@ -37,7 +58,7 @@ class Post extends HiveObject {
   Post copyWith({
     String? id,
     String? author,
-    String? authorImageBytes,
+    Uint8List? authorImageBytes,
     String? content,
     int? likes,
     bool? isLiked,
