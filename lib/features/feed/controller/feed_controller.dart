@@ -9,11 +9,12 @@ class FeedController {
   FeedController(this.store, this.service);
 
   Future<void> init() async {
+    store.setLoading(true);
+    await Future.delayed(const Duration(milliseconds: 300));
     final List<Post> cached = await service.getCachedPosts();
     await store.loadPosts(cached);
-    store.setLastSync(DateTime.now());
+  
 
-    store.setLoading(true);
     try {
       final bool hasUpdates = store.lastSync != null
           ? await service.shouldUpdate(store.lastSync!)
@@ -40,7 +41,7 @@ class FeedController {
     try {
       final Map<String, dynamic>? result =
           await service.updateLike(post.id, !post.isLiked);
-      
+
       if (result != null) {
         final int remoteLikes = result['likes'] as int;
         final bool remoteIsLiked = result['isLiked'] as bool;

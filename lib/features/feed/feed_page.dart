@@ -72,25 +72,30 @@ class _FeedPageState extends State<FeedPage> {
             return const FeedEmptyState();
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.only(top: 24),
-            itemCount: store.posts.length,
-            itemBuilder: (BuildContext context, int index) {
-              final Post post = store.posts[index];
-              return PostCard(
-                post: post,
-                onTap: () async {
-                  final bool? edited = await context.pushNamed<bool>(
-                    RouteNames.postDetail,
-                    pathParameters: <String, String>{'id': post.id},
-                  );
-                  if (edited == true) {
-                    await _controller.init();
-                  }
-                },
-                onLike: () => _controller.toggleLike(post),
-              );
+          return RefreshIndicator(
+            onRefresh: () {
+              return _controller.init();
             },
+            child: ListView.builder(
+              padding: const EdgeInsets.only(top: 24),
+              itemCount: store.posts.length,
+              itemBuilder: (BuildContext context, int index) {
+                final Post post = store.posts[index];
+                return PostCard(
+                  post: post,
+                  onTap: () async {
+                    final bool? edited = await context.pushNamed<bool>(
+                      RouteNames.postDetail,
+                      pathParameters: <String, String>{'id': post.id},
+                    );
+                    if (edited == true) {
+                      await _controller.init();
+                    }
+                  },
+                  onLike: () => _controller.toggleLike(post),
+                );
+              },
+            ),
           );
         },
       ),
