@@ -28,6 +28,19 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
+  Future<Post?> fetchPostById(String id) async {
+    try {
+      final Response<dynamic> response = await _api.get('/posts/$id');
+      if (response.statusCode == 200 && response.data != null) {
+        return Post.fromJson(response.data as Map<String, dynamic>);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
+  }
+
+  @override
   Future<Post?> createPost(Post post) async {
     try {
       final Response<dynamic> response =
@@ -58,5 +71,33 @@ class PostRepositoryImpl implements PostRepository {
       return response.statusCode == 200 || response.statusCode == 204;
     } catch (_) {}
     return false;
+  }
+
+  @override
+  Future<Map<String, dynamic>?> patchLike(String id, bool isLiked) async {
+    try {
+      final Response<dynamic> response = await _api.patch(
+        '/posts/$id/like',
+        data: {'isLiked': isLiked},
+      );
+      if (response.statusCode == 200 && response.data != null) {
+        return response.data as Map<String, dynamic>;
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  @override
+  Future<bool> shouldUpdate(DateTime lastSync) async {
+    try {
+      final String isoDate = lastSync.toIso8601String();
+      final Response<dynamic> response =
+          await _api.get('/posts/shouldUpdate/$isoDate');
+      if (response.statusCode == 200 && response.data != null) {
+        final dynamic data = response.data;
+        return (data as Map<String, dynamic>)['shouldUpdate'] as bool;
+      }
+    } catch (_) {}
+    return true;
   }
 }

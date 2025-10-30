@@ -20,6 +20,9 @@ abstract class _FeedStoreBase with Store {
   @observable
   String? errorMessage;
 
+  @observable
+  DateTime? lastSync;
+
   @action
   void setLoading(bool value) {
     loading = value;
@@ -46,14 +49,26 @@ abstract class _FeedStoreBase with Store {
     final int index = posts.indexWhere((Post p) => p.id == post.id);
     if (index == -1) return;
 
-     Post current = posts[index];
-    current.isLiked = !current.isLiked;
-    if (current.isLiked) {
-      current = current.copyWith(likes: current.likes + 1);
-    } else {
-      current = current.copyWith(likes: current.likes - 1);
-    }
-    posts[index] = current;
+    final Post current = posts[index];
+    final bool newIsLiked = !current.isLiked;
+    final int newLikes = newIsLiked ? current.likes + 1 : current.likes - 1;
+    posts[index] = current.copyWith(likes: newLikes, isLiked: newIsLiked);
+  }
+
+  @action
+  void revertLike(Post post) {
+    final int index = posts.indexWhere((Post p) => p.id == post.id);
+    if (index == -1) return;
+
+    posts[index] = post;
+  }
+
+  @action
+  void syncLike(String postId, int likes, bool isLiked) {
+    final int index = posts.indexWhere((Post p) => p.id == postId);
+    if (index == -1) return;
+    final Post current = posts[index];
+    posts[index] = current.copyWith(likes: likes, isLiked: isLiked);
   }
 
   @action
@@ -73,5 +88,10 @@ abstract class _FeedStoreBase with Store {
   @action
   void removePost(String id) {
     posts.removeWhere((Post p) => p.id == id);
+  }
+
+  @action
+  void setLastSync(DateTime? dateTime) {
+    lastSync = dateTime;
   }
 }

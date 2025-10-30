@@ -27,6 +27,19 @@ class PostServiceImpl implements PostService {
   }
 
   @override
+  Future<Post?> fetchPostById(String id) async {
+    try {
+      final Post? remote = await api.fetchPostById(id);
+      if (remote != null) {
+        await local.put(remote.id, remote);
+      }
+      return remote;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
   Future<void> savePost(Post post) async {
     await api.createPost(post);
   }
@@ -39,5 +52,15 @@ class PostServiceImpl implements PostService {
   @override
   Future<void> deletePost(String id) async {
     await api.deletePost(id);
+  }
+
+  @override
+  Future<Map<String, dynamic>?> updateLike(String id, bool isLiked) async {
+    return await api.patchLike(id, isLiked);
+  }
+
+  @override
+  Future<bool> shouldUpdate(DateTime lastSync) async {
+    return await api.shouldUpdate(lastSync);
   }
 }

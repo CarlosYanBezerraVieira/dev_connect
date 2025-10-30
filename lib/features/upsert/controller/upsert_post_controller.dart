@@ -12,23 +12,7 @@ class UpsertPostController {
     store.setLoading(true);
     store.clearError();
     try {
-      Post? found;
-
-      final List<Post> afterRemote = await service.fetchAndCachePosts();
-      found = afterRemote.firstWhere(
-        (Post p) => p.id == id,
-        orElse: () => Post(
-          id: '',
-          author: '',
-          authorImageBytes: '',
-          content: '',
-          likes: 0,
-          isLiked: false,
-        ),
-      );
-      if (found.id.isEmpty) {
-        found = null;
-      }
+      final Post? found = await service.fetchPostById(id);
 
       store.setCurrentPost(found);
       if (found == null) {

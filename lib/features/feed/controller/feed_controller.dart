@@ -11,12 +11,20 @@ class FeedController {
   Future<void> init() async {
     final List<Post> cached = await service.getCachedPosts();
     await store.loadPosts(cached);
+    store.setLastSync(DateTime.now());
 
     store.setLoading(true);
     try {
-      final List<Post> refreshed = await service.fetchAndCachePosts();
-      if (refreshed.isNotEmpty) {
-        await store.loadPosts(refreshed);
+      final bool hasUpdates = store.lastSync != null
+          ? await service.shouldUpdate(store.lastSync!)
+          : true;
+
+      if (hasUpdates) {
+        final List<Post> refreshed = await service.fetchAndCachePosts();
+        if (refreshed.isNotEmpty) {
+          await store.loadPosts(refreshed);
+          store.setLastSync(DateTime.now());
+        }
       }
       store.clearError();
     } catch (e) {
@@ -28,11 +36,19 @@ class FeedController {
 
   Future<void> toggleLike(Post post) async {
     store.toggleLike(post);
+
     try {
-      await service.updatePost(post);
+      final Map<String, dynamic>? result =
+          await service.updateLike(post.id, !post.isLiked);
+      
+      if (result != null) {
+        final int remoteLikes = result['likes'] as int;
+        final bool remoteIsLiked = result['isLiked'] as bool;
+        store.syncLike(post.id, remoteLikes, remoteIsLiked);
+      }
       store.clearError();
     } catch (_) {
-      store.toggleLike(post);
+      store.revertLike(post);
       store.setError('Não foi possível atualizar o like.');
     }
   }
