@@ -17,6 +17,9 @@ abstract class _FeedStoreBase with Store {
   @observable
   bool loading = false;
 
+  @observable
+  String? errorMessage;
+
   @action
   void setLoading(bool value) {
     loading = value;
@@ -26,6 +29,16 @@ abstract class _FeedStoreBase with Store {
   Future<void> loadPosts(List<Post> initialPosts) async {
     posts.clear();
     posts.addAll(initialPosts);
+  }
+
+  @action
+  void setError(String? message) {
+    errorMessage = message;
+  }
+
+  @action
+  void clearError() {
+    errorMessage = null;
   }
 
   @action
@@ -46,6 +59,15 @@ abstract class _FeedStoreBase with Store {
   @action
   void addPost(Post post) {
     posts.insert(0, post);
+  }
+
+  @action
+  void insertPostAtIndex(Post post, int index) {
+    if (index < 0 || index > posts.length) {
+      posts.add(post);
+    } else {
+      posts.insert(index, post);
+    }
   }
 
   @action
