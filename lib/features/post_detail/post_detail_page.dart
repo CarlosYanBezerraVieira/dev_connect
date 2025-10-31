@@ -57,10 +57,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Observer(builder: (_) {
-            final String title = (_store.post?.author.isNotEmpty == true)
-                ? _store.post!.author
-                : 'Detalhes do Post';
-            return Text(title);
+            return const Text('Detalhes do Post');
           }),
           actions: <Widget>[
             Observer(builder: (_) {
