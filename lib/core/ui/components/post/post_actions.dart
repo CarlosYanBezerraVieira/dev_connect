@@ -16,16 +16,11 @@ class PostActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        ActionButton(
-          icon: isLiked ? Icons.favorite : Icons.favorite_border,
-          color: isLiked ? AppColors.error : AppColors.midGray,
-          label: likeCount.toString(),
-          onTap: onLike,
-        ),
-      ],
+    return ActionButton(
+      icon: isLiked ? Icons.favorite : Icons.favorite,
+      color: isLiked ? AppColors.error : AppColors.midGray,
+      label: likeCount.toString(),
+      onTap: onLike,
     );
   }
 }
