@@ -46,11 +46,55 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Feed'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.add),
+        appBar: AppBar(
+          title: const Text('Dev Connect'),
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Image.asset(
+              'assets/logo.png',
+              height: 10,
+            ),
+          ),
+        ),
+        body: Observer(
+          builder: (_) {
+            final FeedStore store = _controller.store;
+            if (store.loading) {
+              return const DCLoading();
+            }
+
+            if (store.posts.isEmpty) {
+              return const FeedEmptyState();
+            }
+
+            return RefreshIndicator(
+              onRefresh: () {
+                return _controller.init();
+              },
+              child: ListView.builder(
+                padding: const EdgeInsets.only(top: 24),
+                itemCount: store.posts.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final Post post = store.posts[index];
+                  return PostCard(
+                    post: post,
+                    onTap: () async {
+                      final bool? edited = await context.pushNamed<bool>(
+                        RouteNames.postDetail,
+                        pathParameters: <String, String>{'id': post.id},
+                      );
+                      if (edited == true) {
+                        await _controller.init();
+                      }
+                    },
+                    onLike: () => _controller.toggleLike(post),
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
             onPressed: () async {
               final bool? result =
                   await context.push<bool>(AppRoutes.postUpsert);
@@ -58,47 +102,6 @@ class _FeedPageState extends State<FeedPage> {
                 await _controller.init();
               }
             },
-          ),
-        ],
-      ),
-      body: Observer(
-        builder: (_) {
-          final FeedStore store = _controller.store;
-          if (store.loading) {
-            return const DCLoading();
-          }
-
-          if (store.posts.isEmpty) {
-            return const FeedEmptyState();
-          }
-
-          return RefreshIndicator(
-            onRefresh: () {
-              return _controller.init();
-            },
-            child: ListView.builder(
-              padding: const EdgeInsets.only(top: 24),
-              itemCount: store.posts.length,
-              itemBuilder: (BuildContext context, int index) {
-                final Post post = store.posts[index];
-                return PostCard(
-                  post: post,
-                  onTap: () async {
-                    final bool? edited = await context.pushNamed<bool>(
-                      RouteNames.postDetail,
-                      pathParameters: <String, String>{'id': post.id},
-                    );
-                    if (edited == true) {
-                      await _controller.init();
-                    }
-                  },
-                  onLike: () => _controller.toggleLike(post),
-                );
-              },
-            ),
-          );
-        },
-      ),
-    );
+            child: const Icon(Icons.add)));
   }
 }
