@@ -64,7 +64,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
@@ -75,6 +74,15 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 120,
+                  ),
+                  Text(
+                    'Dev Connect',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: 20),
                   Observer(builder: (_) {
                     return DCTextFormField(
                       controller: _emailCtrl,
@@ -103,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                       ]),
                     );
                   }),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 32),
                   Observer(builder: (_) {
                     return DCButton(
                       onPressed: _submit,
