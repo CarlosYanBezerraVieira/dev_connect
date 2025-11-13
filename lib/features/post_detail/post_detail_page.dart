@@ -1,7 +1,9 @@
 import 'package:dev_connect/core/di/service_locator.dart';
 import 'package:dev_connect/core/routes/app_routes.dart';
 import 'package:dev_connect/core/ui/components/loading/dc_loading.dart';
-import 'package:dev_connect/core/ui/components/post/post_header.dart';
+import 'package:dev_connect/core/ui/components/post/image_post.dart';
+import 'package:dev_connect/core/ui/components/post/post_timestamp.dart';
+import 'package:dev_connect/core/ui/theme/app_colors.dart';
 import 'package:dev_connect/features/post_detail/controller/post_detail_controller.dart';
 import 'package:dev_connect/features/post_detail/store/post_detail_store.dart';
 import 'package:dev_connect/core/ui/dialog/delete_confirmation_dialog.dart';
@@ -48,6 +50,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final relativeHeight = MediaQuery.of(context).size.height * 0.75;
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, Object? result) {
@@ -101,29 +104,45 @@ class _PostDetailPageState extends State<PostDetailPage> {
             return const Center(child: Text('Post não encontrado.'));
           }
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                PostHeader(
-                  author: _store.post!.author,
+                ImagePost(
+                  height: relativeHeight,
+                  radius: 0,
                   authorImageBytes: _store.post!.authorImageBytes,
-                  createdAt: _store.post!.createdAt,
+                  title: _store.post!.author,
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  _store.post!.content,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: <Widget>[
-                    Icon(Icons.thumb_up,
-                        size: 18, color: Theme.of(context).colorScheme.primary),
-                    const SizedBox(width: 6),
-                    Text('${_store.post!.likes} curtidas'),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12)
+                          .copyWith(top: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: <Widget>[
+                              const Icon(Icons.favorite,
+                                  size: 18, color: AppColors.error),
+                              const SizedBox(width: 6),
+                              Text(_store.post!.likes.toString()),
+                              const SizedBox(width: 12),
+                              Text(
+                                _store.post!.content,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
+                          PostTimestamp(
+                            createdAt: _store.post!.createdAt,
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
-                ),
+                )
               ],
             ),
           );
