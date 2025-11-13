@@ -1,7 +1,8 @@
-import 'package:dev_connect/core/ui/components/post/image_post.dart';
 import 'package:dev_connect/core/ui/components/post/post_footer.dart';
 import 'package:dev_connect/models/post_model.dart';
 import 'package:flutter/material.dart';
+
+import 'image_post.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -28,13 +29,9 @@ class PostCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Column(
-              children: [
-                ImagePost(
-                  title: post.author,
-                  authorImageBytes: post.authorImageBytes,
-                ),
-              ],
+            ImagePost(
+              title: post.author,
+              authorImageBytes: post.authorImageBytes,
             ),
             PostFooter(
               description: post.content,

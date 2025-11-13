@@ -1,16 +1,19 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 
 class ImagePost extends StatelessWidget {
   final Uint8List authorImageBytes;
   final String title;
   final double? height;
+  final double radius;
+
+
   const ImagePost(
       {super.key,
       required this.authorImageBytes,
+      required this.title,
       this.height,
-      required this.title});
+      this.radius = 12});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,7 @@ class ImagePost extends StatelessWidget {
     return Stack(
       children: [
         ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(radius)),
           child: Image.memory(
             authorImageBytes,
             width: double.infinity,
@@ -33,7 +36,7 @@ class ImagePost extends StatelessWidget {
           height: sizeSectionAuthor,
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor.withAlpha(50),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(radius)),
           ),
           child: Text(
             title,
