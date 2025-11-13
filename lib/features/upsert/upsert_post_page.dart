@@ -36,7 +36,7 @@ class _UpsertPostPageState extends State<UpsertPostPage> with ImagePickerMixin {
   bool get _isEditing => (widget.postId != null && widget.postId!.isNotEmpty);
 
   ReactionDisposer? _errorDisposer;
-  
+
   @override
   void initState() {
     super.initState();
@@ -125,56 +125,62 @@ class _UpsertPostPageState extends State<UpsertPostPage> with ImagePickerMixin {
           if (_store.loading && _isEditing) {
             return const Center(child: DCLoading());
           }
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Center(
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16,).copyWith(top: 16, bottom: 24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
                     child: Column(
-                      children: [
-                        Observer(builder: (_) {
-                          return DCCircularAvatar(
-                            imageBytes: _store.selectedImageBytes,
-                            radius: 80,
-                            onTap: _handlePickImage,
-                          );
-                        }),
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Center(
+                          child: Column(
+                            children: [
+                              Observer(builder: (_) {
+                                return DCCircularAvatar(
+                                  imageBytes: _store.selectedImageBytes,
+                                  radius: 80,
+                                  onTap: _handlePickImage,
+                                );
+                              }),
+                              const SizedBox(height: 12),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        DCTextFormField(
+                          controller: _authorController,
+                          label: 'Autor',
+                          validator: Validatorless.required('Informe o autor'),
+                        ),
                         const SizedBox(height: 12),
+                        DCTextFormField(
+                          controller: _contentController,
+                          label: 'Conteúdo',
+                          minLines: 5,
+                          maxLines: 10,
+                          validator: Validatorless
+                              .multiple(<FormFieldValidator<String>>[
+                            Validatorless.required('Informe o conteúdo'),
+                            Validatorless.min(5, 'Mínimo de 5 caracteres'),
+                          ]),
+                        ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  DCTextFormField(
-                    controller: _authorController,
-                    label: 'Autor',
-                    validator: Validatorless.required('Informe o autor'),
-                  ),
-                  const SizedBox(height: 12),
-                  DCTextFormField(
-                    controller: _contentController,
-                    label: 'Conteúdo',
-                    minLines: 5,
-                    maxLines: 10,
-                    validator:
-                        Validatorless.multiple(<FormFieldValidator<String>>[
-                      Validatorless.required('Informe o conteúdo'),
-                      Validatorless.min(5, 'Mínimo de 5 caracteres'),
-                    ]),
-                  ),
-                  const SizedBox(height: 24),
-                  Observer(builder: (_) {
-                    return DCButton(
-                      onPressed: _submit,
-                      label: buttonText,
-                      loading: _store.submitting,
-                      icon: _isEditing ? Icons.save : Icons.send,
-                    );
-                  }),
-                ],
-              ),
+                ),
+                Observer(builder: (_) {
+                  return DCButton(
+                    onPressed: _submit,
+                    label: buttonText,
+                    loading: _store.submitting,
+                    icon: _isEditing ? Icons.save : Icons.send,
+                  );
+                }),
+              ],
             ),
           );
         }),
