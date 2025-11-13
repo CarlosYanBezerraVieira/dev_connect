@@ -138,15 +138,11 @@ class _UpsertPostPageState extends State<UpsertPostPage> with ImagePickerMixin {
                         Observer(builder: (_) {
                           return DCCircularAvatar(
                             imageBytes: _store.selectedImageBytes,
-                            radius: 50,
+                            radius: 80,
+                            onTap: _handlePickImage,
                           );
                         }),
                         const SizedBox(height: 12),
-                        ElevatedButton.icon(
-                          onPressed: _handlePickImage,
-                          icon: const Icon(Icons.image),
-                          label: const Text('Selecionar Imagem'),
-                        ),
                       ],
                     ),
                   ),
